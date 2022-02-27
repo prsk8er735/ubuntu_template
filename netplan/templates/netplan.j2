@@ -1,0 +1,10 @@
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    {{ ansible_default_ipv4.interface }}:
+      dhcp4: yes
+      gateway4: 192.168.5.1
+      nameservers:
+          addresses: [192.168.5.3, 192.168.5.3]
+          search: [dragonhomelabs.com]

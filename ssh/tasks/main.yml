@@ -1,0 +1,32 @@
+---
+# tasks file for ssh
+- name: copy SSH key for user rspoon
+  copy: 
+    src: /home/rspoon/.ssh/id_*
+    dest: /home/rspoon/.ssh/
+    owner: rspoon
+    group: rspoon
+    mode: '0644'
+
+- name: Copy SSH id for user ansible  
+  authorize_key:
+    user: ansible
+    state: present
+    key: "{{ lookup('file', '/home/ansible/.ssh/id_rsa.pub') }}"
+
+- name: Ensure group "nopwsudo" exists
+  ansible.builtin.group:
+    name: nopwsudo
+    state: present
+
+- name: Ensure we passwordless sudo rule exists in /etc/sudoers
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    regexp: '^%sudo   ALL=(ALL:ALL) ALL'
+    insertafter: '^%sudo   ALL=(ALL:ALL) ALL'
+    line: >
+      # Allow members of group nopwsudo to execute any command
+      %nopwsudo         ALL = (ALL) NOPASSWD: ALL
+    state: present
+
+

@@ -1,0 +1,15 @@
+---
+# tasks file for time
+- name: Set Timezone to New York
+  command: timedatectl set-timezone America/New_York
+
+- name: Set NTP config to time.google.com
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/timesyncd.conf 
+    regexp: '^#NTP='
+    line: NTP=time.google.com
+
+- name: Restart timesyncd 
+  service:  
+    name: systemd-timesyncd
+    state: restarted
