@@ -21,7 +21,7 @@
     mode: '0644'
 
 - name: Copy SSH id for user ansible  
-  authorize_key:
+  ansible.posix.authorized_key:
     user: ansible
     state: present
     key: "{{ lookup('file', '/home/ansible/.ssh/id_rsa.pub') }}"
