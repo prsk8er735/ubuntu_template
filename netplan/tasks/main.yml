@@ -1,6 +1,9 @@
 ---
 # tasks file for netplan
-- name: Template a file to /etc/file.conf
+- name: Template a file to /etc/netplan/00-ansible-netplan.yaml
   ansible.builtin.template:
     src: netplan.j2
     dest: /etc/netplan/00-ansible-netplan.yaml
+
+- name: Apply netplan config    
+  command: netplan apply
