@@ -1,0 +1,17 @@
+---
+- hosts: all
+  tasks:
+    - include_role:
+        name: netplan
+
+    - include_role:
+        name: ssh
+    
+    - include_role:
+        name: time
+
+    - name: Update all packages to their latest version
+      apt:
+        name: "*"
+        state: latest
+
