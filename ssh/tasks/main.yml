@@ -14,11 +14,13 @@
 
 - name: copy SSH key for user rspoon
   copy: 
-    src: /home/rspoon/.ssh/id_*
+    src: "{{ item }}"
     dest: /home/rspoon/.ssh/
     owner: rspoon
     group: rspoon
     mode: '0644'
+  with_fileglob:
+    - "/home/rspoon/.ssh/id_*"
 
 - name: Copy SSH id for user ansible  
   ansible.posix.authorized_key:
