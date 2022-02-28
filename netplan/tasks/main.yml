@@ -5,5 +5,16 @@
     src: netplan.j2
     dest: /etc/netplan/00-ansible-netplan.yaml
 
+- name: Move default netplan file to backup
+  copy:
+    remote_src: yes
+    src: /etc/netplan/00-installer-config.yaml 
+    dest: /etc/netplan/00-installer-config.yaml.bak
+
+- name: Remove old netplan file
+  file:
+    path: /etc/netplan/00-installer-config.yaml
+    state: absent
+
 - name: Apply netplan config    
   command: netplan apply
