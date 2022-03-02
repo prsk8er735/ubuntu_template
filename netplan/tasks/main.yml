@@ -1,14 +1,9 @@
 ---
 # tasks file for netplan
-- name: Template a file to /etc/netplan/00-ansible-netplan.yaml
-  ansible.builtin.template:
-    src: netplan.j2
-    dest: /etc/netplan/00-ansible-netplan.yaml
-
-- name: Check in default netplan exists
+- name: Check if default netplan exists
   ansible.builtin.stat:
     path: /etc/netplan/00-installer-config.yaml
-  register: netplan
+  register: default_netplan
 
 - block:
     - name: Move default netplan file to backup
@@ -21,7 +16,19 @@
       file:
         path: /etc/netplan/00-installer-config.yaml
         state: absent
-  when: netplan.stat.exists
+  when: default_netplan.stat.exists
 
-- name: Apply netplan config    
-  command: netplan apply
+- name: Check if new netplan exists
+  ansible.builtin.stat:
+    path: /etc/netplan/00-installer-config.yaml
+  register: new_netplan
+  
+- block:
+    - name: Template a file to /etc/netplan/00-ansible-netplan.yaml
+      ansible.builtin.template:
+        src: netplan.j2
+        dest: /etc/netplan/00-ansible-netplan.yaml
+
+    - name: Apply netplan config    
+      command: netplan apply
+  when: not new_netplan.stat.exists
