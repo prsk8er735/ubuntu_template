@@ -28,7 +28,7 @@
         user: ansible
         state: present
         key: "{{ lookup('file', '/home/ansible/.ssh/id_ed25519.pub') }}"
-  delegate_to: ansible
+  #delegate_to: ansible
 
 - name: Ensure passwordless sudo rule exists in /etc/sudoers
   ansible.builtin.lineinfile:
