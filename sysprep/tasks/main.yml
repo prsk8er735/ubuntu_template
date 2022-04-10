@@ -1,0 +1,26 @@
+---
+# tasks file for sysprep
+
+- name: Prevent cloudconfig from preserving the original hostname and reset the hostname
+  shell: |
+    sed -i 's/preserve_hostname: false/preserve_hostname: true/g' /etc/cloud/cloud.cfg
+    truncate -s0 /etc/hostname
+    hostnamectl set-hostname localhost
+  become: yes
+
+- name: Clean shell history
+  shell: cat /dev/null > ~/.bash_history && history -c
+
+- name: Shutdown the VM
+  shell: shutdown now
+  become: yes
+
+  - name: "Renaming {{ inventory_hostname }} to {{ old_template_name }} and converting to template."
+    vmware_guest:
+      hostname: "{{ vcenter_fqdn }}"
+      username: "{{ vcenter_admin_user }}"
+      password: "{{ vcenter_admin_pass }}"
+      name: ubuntu_template
+      folder: "VM Templates"
+      is_template: true
+    delegate_to: localhost
